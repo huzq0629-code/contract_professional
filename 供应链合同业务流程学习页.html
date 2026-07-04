@@ -1,0 +1,1297 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>供应链合同业务流程学习页</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --ink: #17202a;
+      --muted: #667085;
+      --line: #d7dde5;
+      --panel: #ffffff;
+      --accent: #0f766e;
+      --accent-2: #2563eb;
+      --accent-3: #b45309;
+      --accent-4: #7c3aed;
+      --danger: #b42318;
+      --ok: #16803c;
+      --shadow: 0 12px 34px rgba(15, 23, 42, .08);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, #ffffff 0, #f7f8fa 440px, var(--bg) 100%);
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", Arial, sans-serif;
+      line-height: 1.58;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .page {
+      width: min(1240px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 36px 0 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      background: #0f766e;
+      color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 10px 24px rgba(15, 118, 110, .22);
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .nav a {
+      padding: 8px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #344054;
+      background: rgba(255,255,255,.76);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 28px;
+      align-items: end;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 4.2vw, 56px);
+      line-height: 1.08;
+      letter-spacing: 0;
+      max-width: 850px;
+    }
+
+    .lead {
+      margin: 18px 0 0;
+      max-width: 810px;
+      color: #475467;
+      font-size: 17px;
+    }
+
+    .hero-note {
+      background: #101828;
+      color: #f8fafc;
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-note strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .hero-note p {
+      margin: 0;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    section {
+      padding: 34px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 22px;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(24px, 2.5vw, 34px);
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      margin: 0;
+      max-width: 620px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .flow-board {
+      overflow-x: auto;
+      padding: 8px 0 16px;
+    }
+
+    .master-flow {
+      min-width: 1060px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 14px;
+      align-items: stretch;
+      position: relative;
+    }
+
+    .master-flow::before {
+      content: "";
+      position: absolute;
+      top: 46px;
+      left: 7%;
+      right: 7%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-3), var(--accent), var(--accent-2), var(--accent-4));
+      border-radius: 999px;
+      z-index: 0;
+    }
+
+    .node {
+      position: relative;
+      z-index: 1;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      min-height: 210px;
+      box-shadow: var(--shadow);
+    }
+
+    .node .num {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--accent);
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .node.procure .num { background: var(--accent-3); }
+    .node.auth .num { background: #475467; }
+    .node.trade .num { background: var(--accent); }
+    .node.international .num { background: var(--accent-2); }
+    .node.storage .num { background: #0891b2; }
+    .node.logistics .num { background: var(--accent-4); }
+    .node.settle .num { background: var(--danger); }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .node p,
+    .mini p,
+    .term p,
+    .lane p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      max-width: 100%;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: #edf4ff;
+      color: #1849a9;
+      font-size: 12px;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+
+    .chip.warn { background: #fff4e5; color: #92400e; }
+    .chip.ok { background: #eaf8ef; color: #166534; }
+    .chip.risk { background: #fff1f0; color: #b42318; }
+    .chip.gray { background: #f2f4f7; color: #475467; }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .mini, .term, .lane, .check {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .05);
+    }
+
+    .mini h3, .term h3, .lane h3, .check h3 { font-size: 17px; }
+
+    .swimlanes {
+      display: grid;
+      gap: 14px;
+    }
+
+    .lane {
+      display: grid;
+      grid-template-columns: 170px minmax(0, 1fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .lane-title {
+      border-right: 1px solid var(--line);
+      padding-right: 14px;
+    }
+
+    .lane-title .label {
+      display: inline-flex;
+      padding: 5px 8px;
+      margin-bottom: 10px;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .lane-flow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .step {
+      border: 1px solid #e4e7ec;
+      background: #fbfcfd;
+      border-radius: var(--radius);
+      padding: 12px;
+      min-height: 136px;
+      position: relative;
+    }
+
+    .step::after {
+      content: "";
+      position: absolute;
+      top: 26px;
+      right: -10px;
+      width: 10px;
+      height: 2px;
+      background: #cbd5e1;
+    }
+
+    .step:last-child::after { display: none; }
+
+    .step b {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .step span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .term-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .term {
+      padding: 15px;
+      position: relative;
+      outline: none;
+    }
+
+    .term::after {
+      content: attr(data-simple);
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: calc(100% + 10px);
+      z-index: 5;
+      display: block;
+      padding: 10px 11px;
+      border-radius: 8px;
+      background: #101828;
+      color: #fff;
+      font-size: 12px;
+      line-height: 1.5;
+      box-shadow: 0 14px 34px rgba(15, 23, 42, .22);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(6px);
+      transition: opacity .16s ease, transform .16s ease;
+    }
+
+    .term::before {
+      content: "";
+      position: absolute;
+      left: 26px;
+      bottom: calc(100% + 3px);
+      z-index: 6;
+      width: 12px;
+      height: 12px;
+      background: #101828;
+      transform: rotate(45deg);
+      opacity: 0;
+      transition: opacity .16s ease;
+    }
+
+    .term:hover::after,
+    .term:hover::before,
+    .term:focus-within::after,
+    .term:focus-within::before {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .term h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .term small {
+      display: block;
+      margin-top: 10px;
+      color: #344054;
+      font-size: 12px;
+      border-top: 1px dashed #d0d5dd;
+      padding-top: 9px;
+    }
+
+    .hint {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      margin-left: auto;
+      border-radius: 50%;
+      background: #eef4ff;
+      color: #1849a9;
+      font-size: 12px;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .matrix {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .05);
+    }
+
+    .matrix th, .matrix td {
+      border-bottom: 1px solid var(--line);
+      padding: 12px 13px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+
+    .matrix th {
+      background: #f2f4f7;
+      color: #344054;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .matrix tr:last-child td { border-bottom: 0; }
+
+    .matrix td:first-child {
+      font-weight: 700;
+      color: #101828;
+      width: 142px;
+    }
+
+    .alert {
+      border-left: 4px solid var(--danger);
+      background: #fff7f7;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      color: #7a271a;
+      font-size: 14px;
+    }
+
+    .freight-map {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .party-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 15px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .05);
+      min-height: 160px;
+    }
+
+    .party-card h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+    }
+
+    .party-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .route-strip {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .route-step {
+      position: relative;
+      background: #fbfcfd;
+      border: 1px solid #e4e7ec;
+      border-radius: var(--radius);
+      padding: 13px;
+      min-height: 126px;
+    }
+
+    .route-step::after {
+      content: "";
+      position: absolute;
+      top: 26px;
+      right: -10px;
+      width: 10px;
+      height: 2px;
+      background: #cbd5e1;
+    }
+
+    .route-step:last-child::after { display: none; }
+
+    .route-step b {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .route-step span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .plain-list {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: #475467;
+      font-size: 13px;
+    }
+
+    .plain-list li { margin: 5px 0; }
+
+    .doc-release-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      align-items: start;
+      margin-top: 14px;
+    }
+
+    .wide-panel {
+      min-width: 0;
+    }
+
+    .narrow-panel {
+      min-width: 0;
+    }
+
+    .release-table th:nth-child(1),
+    .release-table td:nth-child(1) {
+      width: 104px;
+      white-space: nowrap;
+    }
+
+    .release-table th:nth-child(2),
+    .release-table td:nth-child(2) {
+      width: 36%;
+    }
+
+    .release-table th:nth-child(3),
+    .release-table td:nth-child(3) {
+      width: 26%;
+    }
+
+    .clause-suggestion {
+      padding: 16px;
+    }
+
+    .clause-suggestion .alert {
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .clause-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 8px 0 18px;
+    }
+
+    .controls input {
+      flex: 1 1 260px;
+      min-width: 0;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 11px 12px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .controls input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, .12);
+    }
+
+    .button {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      font-size: 13px;
+      color: #344054;
+      cursor: pointer;
+    }
+
+    .button:hover { border-color: #98a2b3; }
+
+    .hidden-by-search { display: none; }
+
+    footer {
+      padding: 32px 0 44px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .grid-3,
+      .grid-2,
+      .lane {
+        grid-template-columns: 1fr;
+      }
+
+      .lane-title {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+        padding-right: 0;
+        padding-bottom: 12px;
+      }
+
+      .lane-flow {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .term-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .freight-map {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .route-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .doc-release-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        display: block;
+      }
+
+      .section-head p { margin-top: 8px; }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        width: min(100% - 20px, 1240px);
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav {
+        justify-content: flex-start;
+      }
+
+      .lane-flow,
+      .term-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .freight-map,
+      .route-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .clause-options {
+        grid-template-columns: 1fr;
+      }
+
+      .route-step::after {
+        display: none;
+      }
+
+      .matrix {
+        display: block;
+        overflow-x: auto;
+      }
+
+      .hero-note { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="page">
+      <div class="topbar">
+        <div class="brand">
+          <div class="mark" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M6 5h8l4 4v10H6V5Z" stroke="currentColor" stroke-width="2" />
+              <path d="M14 5v5h5M8.5 14h7M8.5 17h5" stroke="currentColor" stroke-width="2" />
+            </svg>
+          </div>
+          <span>供应链合同业务地图</span>
+        </div>
+        <nav class="nav" aria-label="页面导航">
+          <a href="#master">总流程</a>
+          <a href="#lanes">业务泳道</a>
+          <a href="#terms">术语卡片</a>
+          <a href="#clauses">条款矩阵</a>
+          <a href="#intl-freight">国际货运</a>
+          <a href="#risks">风险清单</a>
+        </nav>
+      </div>
+
+      <div class="hero">
+        <div>
+          <h1>把招采、授权、贸易、仓储、物流运输串成一张能看懂的业务流程图</h1>
+          <p class="lead">这页按供应链业务的真实顺序组织：先选供应商和确定交易，再通过授权/附件补齐执行权限，然后进入内贸、外贸或国际贸易合同，最后落到仓储、港口作业、物流运输、结算和风控。</p>
+        </div>
+        <aside class="hero-note">
+          <strong>读图方法</strong>
+          <p>先看主流程，再看泳道。每个节点下面的词，就是你读合同时要特别敏感的术语、黑话和条款抓手。</p>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section id="master">
+      <div class="section-head">
+        <h2>一、总流程：从采购形成到履约结算</h2>
+        <p>这条线把不同合同样本放回同一个业务链条里。招采解决“选谁”，授权解决“谁能办”，贸易合同解决“买卖什么、多少钱”，仓储和物流解决“货怎么控、怎么走”。</p>
+      </div>
+
+      <div class="flow-board" aria-label="供应链合同总流程图">
+        <div class="master-flow">
+          <article class="node procure">
+            <div class="num">1</div>
+            <h3>招采立项与选商</h3>
+            <p>形成采购需求、发布招标/询比文件、收取响应文件、评标并确定中标人。</p>
+            <div class="chips">
+              <span class="chip warn">招标文件</span>
+              <span class="chip warn">投标保证金</span>
+              <span class="chip">评标办法</span>
+              <span class="chip">框架采购</span>
+            </div>
+          </article>
+
+          <article class="node auth">
+            <div class="num">2</div>
+            <h3>授权与附件生效</h3>
+            <p>用授权书、补充协议、GTC/STCs、Letter Agreement 补齐代理、通用条款和主从关系。</p>
+            <div class="chips">
+              <span class="chip gray">Power of Attorney</span>
+              <span class="chip gray">Supplemental Agreement</span>
+              <span class="chip">条款优先级</span>
+            </div>
+          </article>
+
+          <article class="node trade">
+            <div class="num">3</div>
+            <h3>内贸采购/销售</h3>
+            <p>签订国内买卖、购销、年度供货或订单，约定标的、价格、付款、交货和验收。</p>
+            <div class="chips">
+              <span class="chip ok">款到发货</span>
+              <span class="chip ok">点价期</span>
+              <span class="chip">一口价</span>
+              <span class="chip">货权转移</span>
+            </div>
+          </article>
+
+          <article class="node international">
+            <div class="num">4</div>
+            <h3>外贸/国际贸易</h3>
+            <p>处理跨境交易、贸易术语、装运、单证、通关、检验、信用证和国际仲裁。</p>
+            <div class="chips">
+              <span class="chip">FOB/CIF/CFR</span>
+              <span class="chip">Bill of Lading</span>
+              <span class="chip">Letter of Credit</span>
+              <span class="chip">SIAC</span>
+            </div>
+          </article>
+
+          <article class="node storage">
+            <div class="num">5</div>
+            <h3>仓储保管与货权控制</h3>
+            <p>货物入库、分区保管、盘点、出仓、货转，核心是单证和授权指令。</p>
+            <div class="chips">
+              <span class="chip">进仓单</span>
+              <span class="chip">提货单</span>
+              <span class="chip">放货通知</span>
+              <span class="chip risk">私自放货</span>
+            </div>
+          </article>
+
+          <article class="node logistics">
+            <div class="num">6</div>
+            <h3>物流运输与港口作业</h3>
+            <p>通过托运单、订舱、港口作业、装卸、运输、过磅、交接清单完成实体流转。</p>
+            <div class="chips">
+              <span class="chip">托运单</span>
+              <span class="chip">港口作业包干费</span>
+              <span class="chip">Laytime</span>
+              <span class="chip">Demurrage</span>
+            </div>
+          </article>
+
+          <article class="node settle">
+            <div class="num">7</div>
+            <h3>结算、索赔与闭环</h3>
+            <p>依据价格公式、质量检验、发票、费用清单和违约条款完成结算或追责。</p>
+            <div class="chips">
+              <span class="chip risk">跌价追保</span>
+              <span class="chip risk">费用优先冲抵</span>
+              <span class="chip">质量调整价</span>
+              <span class="chip">仲裁分析</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="lanes">
+      <div class="section-head">
+        <h2>二、业务泳道：每类业务怎么跑</h2>
+        <p>同一个合同包里，不同业务线的流程颗粒度不同。下面按常见业务线拆开，看每一步会出现什么合同条款。</p>
+      </div>
+
+      <div class="swimlanes">
+        <article class="lane">
+          <div class="lane-title">
+            <span class="label" style="background:#b45309">招采</span>
+            <h3>从采购需求到中标签约</h3>
+            <p>核心是规则、资格、报价和合同草案。</p>
+          </div>
+          <div class="lane-flow">
+            <div class="step"><b>需求与采购范围</b><span>明确标的、数量、技术规范、交货期、预算。</span><div class="chips"><span class="chip">采购范围</span><span class="chip">技术规范</span></div></div>
+            <div class="step"><b>发布采购文件</b><span>招标、询比、供应商库、框架采购。</span><div class="chips"><span class="chip">招标文件</span><span class="chip">询比采购</span></div></div>
+            <div class="step"><b>投标/响应</b><span>提交报价、资格材料、商务技术响应。</span><div class="chips"><span class="chip">响应文件</span><span class="chip warn">投标保证金</span></div></div>
+            <div class="step"><b>评标定标</b><span>按评分办法、最低价或综合评分确定中标。</span><div class="chips"><span class="chip">评标办法</span><span class="chip">澄清补遗</span></div></div>
+            <div class="step"><b>合同转化</b><span>合同草案变正式合同，缴纳履约保证金。</span><div class="chips"><span class="chip warn">履约保证金</span><span class="chip">合同草案</span></div></div>
+          </div>
+        </article>
+
+        <article class="lane">
+          <div class="lane-title">
+            <span class="label" style="background:#475467">授权</span>
+            <h3>让合同能被执行</h3>
+            <p>不是主交易，但决定谁能办、办到哪一步。</p>
+          </div>
+          <div class="lane-flow">
+            <div class="step"><b>识别主合同</b><span>确认授权或附件服务于哪份合同。</span><div class="chips"><span class="chip">主合同</span><span class="chip">原合同</span></div></div>
+            <div class="step"><b>确认权限范围</b><span>代理报关、仓储、运输、签署文件或办理海关手续。</span><div class="chips"><span class="chip">授权范围</span><span class="chip">代理人</span></div></div>
+            <div class="step"><b>补充/通用条款</b><span>补充协议、GTC、STCs、Letter Agreement。</span><div class="chips"><span class="chip">GTC</span><span class="chip">STCs</span></div></div>
+            <div class="step"><b>条款冲突处理</b><span>明确主合同、附件、补充协议之间谁优先。</span><div class="chips"><span class="chip risk">条款优先级</span></div></div>
+            <div class="step"><b>生效与留档</b><span>签字盖章、有效期、扫描件效力、正本份数。</span><div class="chips"><span class="chip">同等法律效力</span></div></div>
+          </div>
+        </article>
+
+        <article class="lane">
+          <div class="lane-title">
+            <span class="label">内贸</span>
+            <h3>国内买卖与供货</h3>
+            <p>最常见，也是货权和价格最容易出争议的线。</p>
+          </div>
+          <div class="lane-flow">
+            <div class="step"><b>确定标的</b><span>品名、规格、数量、质量标准、包装。</span><div class="chips"><span class="chip">国标</span><span class="chip">质检报告</span></div></div>
+            <div class="step"><b>确定价格机制</b><span>一口价、点价、暂定价、基差、结算价。</span><div class="chips"><span class="chip warn">点价期</span><span class="chip">基差</span></div></div>
+            <div class="step"><b>付款与发票</b><span>款到发货、货到付款、预付款、尾款、专票。</span><div class="chips"><span class="chip ok">款到发货</span><span class="chip">13%专票</span></div></div>
+            <div class="step"><b>交付与货权</b><span>港内交货、工厂自提、仓库交货、风险转移。</span><div class="chips"><span class="chip">港内交货</span><span class="chip risk">风险转移</span></div></div>
+            <div class="step"><b>验收与违约</b><span>过磅、复检、仲裁分析、逾期交货/付款。</span><div class="chips"><span class="chip">SGS/AHK</span><span class="chip risk">跌价损失</span></div></div>
+          </div>
+        </article>
+
+        <article class="lane">
+          <div class="lane-title">
+            <span class="label" style="background:#2563eb">外贸/国际贸易</span>
+            <h3>跨境交易与单证</h3>
+            <p>要同时看贸易术语、船务时间、单证和法律适用。</p>
+          </div>
+          <div class="lane-flow">
+            <div class="step"><b>贸易术语</b><span>确定 EXW、FOB、CFR、CIF、DAP、DES。</span><div class="chips"><span class="chip">Incoterms</span><span class="chip">FOB ST LSD</span></div></div>
+            <div class="step"><b>装运安排</b><span>装运港、目的港、船期、分批装运、转运。</span><div class="chips"><span class="chip">Loading Port</span><span class="chip">Shipment</span></div></div>
+            <div class="step"><b>单证与付款</b><span>提单、商业发票、装箱单、信用证、电汇。</span><div class="chips"><span class="chip">Bill of Lading</span><span class="chip">L/C</span></div></div>
+            <div class="step"><b>船务计时</b><span>NOR、Laytime、Demurrage、PWWD、SHINC。</span><div class="chips"><span class="chip risk">Demurrage</span><span class="chip">NOR</span></div></div>
+            <div class="step"><b>检验与争议</b><span>SGS、质量证书、适用法律、SIAC 仲裁。</span><div class="chips"><span class="chip">Certificate</span><span class="chip">SIAC</span></div></div>
+          </div>
+        </article>
+
+        <article class="lane">
+          <div class="lane-title">
+            <span class="label" style="background:#0891b2">仓储保管</span>
+            <h3>入库、保管、出库、货转</h3>
+            <p>这是货权控制中心，核心是“凭什么放货”。</p>
+          </div>
+          <div class="lane-flow">
+            <div class="step"><b>入库验收</b><span>核对品名、外包装、数量、破包过磅。</span><div class="chips"><span class="chip">入库验收</span><span class="chip">进仓单</span></div></div>
+            <div class="step"><b>保管与盘点</b><span>分区存放、防潮防火、不得混同或擅自移仓。</span><div class="chips"><span class="chip">仓储物</span><span class="chip">库存表</span></div></div>
+            <div class="step"><b>货权凭证</b><span>库存证明、仓单、接货函、指定印鉴。</span><div class="chips"><span class="chip">接货函</span><span class="chip">仓单</span></div></div>
+            <div class="step"><b>出仓/货转</b><span>凭提货单、放货通知、专用章和指定联系人确认。</span><div class="chips"><span class="chip">提货单</span><span class="chip risk">私自放货</span></div></div>
+            <div class="step"><b>费用与责任</b><span>仓储费、装卸费、保险、留置、货损货差。</span><div class="chips"><span class="chip">仓储费</span><span class="chip risk">留置</span></div></div>
+          </div>
+        </article>
+
+        <article class="lane">
+          <div class="lane-title">
+            <span class="label" style="background:#7c3aed">物流运输</span>
+            <h3>货从哪里到哪里</h3>
+            <p>合同常用年度协议，单笔业务靠托运单落地。</p>
+          </div>
+          <div class="lane-flow">
+            <div class="step"><b>委托与托运</b><span>托运单、货运托运书、指定邮箱和联系人。</span><div class="chips"><span class="chip">托运单</span><span class="chip">运单</span></div></div>
+            <div class="step"><b>订舱与通关</b><span>订舱、配载、报关、报检、装箱、转运。</span><div class="chips"><span class="chip">订舱</span><span class="chip">报关报检</span></div></div>
+            <div class="step"><b>港口作业</b><span>卸海轮、进堆场、出堆场、装驳、清舱、过磅。</span><div class="chips"><span class="chip">包干费</span><span class="chip">清舱</span></div></div>
+            <div class="step"><b>在途与交接</b><span>装车、签收、交接清单、货损货差、保险理赔。</span><div class="chips"><span class="chip">交接清单</span><span class="chip">货损货差</span></div></div>
+            <div class="step"><b>费用结算</b><span>运杂费、港杂费、滞期费、滞箱费、发票。</span><div class="chips"><span class="chip">运杂费</span><span class="chip risk">滞期/滞箱</span></div></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="terms">
+      <div class="section-head">
+        <h2>三、术语卡片：看到这些词先停一下</h2>
+        <p>输入关键词可以快速筛选。建议先记住“交货、价格、货权、船务、风控”五类词。</p>
+      </div>
+
+      <div class="controls">
+        <input id="termSearch" type="search" placeholder="搜索术语：例如 点价、平仓交货、FOB、放货通知、滞期费">
+        <button class="button" id="clearSearch" type="button">清空</button>
+      </div>
+
+      <div class="term-grid" id="termGrid">
+        <article class="term" tabindex="0" data-simple="白话：货装上船这一刻基本算卖方交货完成，之后货在船上出问题，多数由买方承担。"><h3><span class="dot"></span>平仓交货<span class="hint">?</span></h3><p>煤炭等散货在装运港越过船舷或装船完成时交货，风险转给买方。</p><small>看点：装船前费用、港口中转费、风险切点。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：卖方把货放到约定港口或港内场地就算交，买方自己去提，后面的仓储和运输费用要自己看清。"><h3><span class="dot"></span>港内交货<span class="hint">?</span></h3><p>在港口场地、仓库或堆场完成交付，买方后续提货并承担费用风险。</p><small>看点：过磅单、接货函、场地过户手续。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：交货位置在船舱里，谁负责把货从舱里弄出来、清舱和承担损耗，合同必须写明。"><h3><span class="dot"></span>舱底交货<span class="hint">?</span></h3><p>强调在船舱内完成交接，常与卸船、清舱、装卸责任、滞期费一起看。</p><small>看点：交货位置、装卸费、清舱责任。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：这段时间内要把最终价格锁定；过期没点价，可能会按合同规则强行定价。"><h3><span class="dot"></span>点价期<span class="hint">?</span></h3><p>允许按期货合约或指数完成点价的时间窗口。</p><small>看点：谁点价、点价合约、超期如何强制点价。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：在期货价或指数价上再加一点或减一点，最后变成现货合同价。"><h3><span class="dot"></span>基差<span class="hint">?</span></h3><p>现货最终价格相对期货或基准价的加减项。</p><small>看点：加还是减、含税与否、按吨计算。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：先拿一个临时价格付款或提货，等最终价格确定后再多退少补。"><h3><span class="dot"></span>暂定价<span class="hint">?</span></h3><p>最终价格未定前用于提货或付款的临时价格。</p><small>看点：付款比例、多退少补、最终结算期限。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：仓库或物流方写给你的收货证明，说明货已经被它接到了。"><h3><span class="dot"></span>接货函<span class="hint">?</span></h3><p>物流/仓储方确认已接收货物的凭证，也可证明货权控制。</p><small>看点：品名、重量、时间、地点、印鉴。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：货主正式告诉仓库或供应商“可以把货交给谁”。没有有效通知就放货，很危险。"><h3><span class="dot"></span>放货通知<span class="hint">?</span></h3><p>货权人指示仓库、供应商或物流方放货的书面/电子指令。</p><small>看点：指定邮箱、专用章、电话复核。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：港口把一串作业打包收一个总价，但你要看清包了哪些，不包哪些。"><h3><span class="dot"></span>港口作业包干费<span class="hint">?</span></h3><p>港口把卸海轮、进出堆场、装车/装驳、过磅等环节打包计费。</p><small>看点：包含项、排除项、非标准作业另计费。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：合同给船装货或卸货的免费时间额度，用超了就可能开始算钱。"><h3><span class="dot"></span>Laytime<span class="hint">?</span></h3><p>合同允许的装卸货时间，超过后通常产生滞期费。</p><small>看点：NOR、天气、节假日、卸货率。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：船等太久、装卸超时产生的罚款式费用，金额可能很大。"><h3><span class="dot"></span>Demurrage<span class="hint">?</span></h3><p>船舶装卸超过允许时间产生的滞期费。</p><small>看点：由谁承担、如何证明、是否可抵扣货款。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：这是船务计时暗号，决定坏天气、周日和节假日算不算进装卸时间。"><h3><span class="dot"></span>PWWD / SHINC<span class="hint">?</span></h3><p>船务计时缩写，分别涉及天气工作日和节假日是否计入。</p><small>看点：直接影响 Laytime 和 Demurrage。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：提单像海运货物的“取货凭证+运输证明+货权钥匙”。谁控制提单，通常谁更能控制货。"><h3><span class="dot"></span>提单 / Bill of Lading<span class="hint">?</span></h3><p>承运人签发的货物收据、运输合同证明和物权凭证。</p><small>看点：正本、电放、清洁提单、重量依据。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：不用寄纸质正本提单，船公司收到指令后通知目的港放货，收货人凭身份或手续提货。"><h3><span class="dot"></span>电放 / Telex Release<span class="hint">?</span></h3><p>正本提单交回或确认后，由承运人电讯通知目的港放货。</p><small>看点：是否已收回正本、谁发电放指令、放货风险。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：纸质提单原件，通常要寄给买方或银行；目的港提货常要凭正本换单。"><h3><span class="dot"></span>正本提单<span class="hint">?</span></h3><p>承运人签发的纸质原件提单，通常可用于控制货权和提货。</p><small>看点：几正几副、寄单风险、遗失补救、背书转让。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：提单上没有写货物或包装有明显问题，表示承运人表面看货是完好的。"><h3><span class="dot"></span>清洁提单<span class="hint">?</span></h3><p>未记载货物或包装表面不良批注的提单，信用证交易中很重要。</p><small>看点：破包、锈蚀、短少批注会影响收款。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：提单上写“凭指示”或“凭某银行/某公司指示”，需要背书后才能转让或提货。"><h3><span class="dot"></span>指示提单<span class="hint">?</span></h3><p>收货人栏写为 To Order 或凭指示，可通过背书转让。</p><small>看点：背书链、银行控制货权、交单付款。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：海运单更像运输收据，不是传统货权凭证；收货人身份对上就可能提货。"><h3><span class="dot"></span>海运单 / Sea Waybill<span class="hint">?</span></h3><p>不可转让的海运运输单证，通常不具备提单式物权凭证功能。</p><small>看点：放货速度快，但货权控制弱于正本提单。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：到港后拿提单或电放信息向船公司/代理换提货单，才能去码头或仓库提货。"><h3><span class="dot"></span>换单 / 提货单 D/O<span class="hint">?</span></h3><p>目的港凭提单、电放或海运单向船代换取交货/提货指令。</p><small>看点：换单费、滞箱滞港、单证是否一致。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：银行承诺，只要卖方提交符合信用证要求的单据，银行就付款。"><h3><span class="dot"></span>Letter of Credit<span class="hint">?</span></h3><p>信用证，银行按约定单证向卖方付款的安排。</p><small>看点：开证期限、交单期、软条款、不符点。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：货价跌了，卖方怕买方违约后保证金不够赔，就要求买方追加保证金。"><h3><span class="dot"></span>跌价追保<span class="hint">?</span></h3><p>市场价格下跌或风险敞口扩大时，要求买方追加保证金。</p><small>看点：跌幅阈值、补足期限、未追保后果。</small></article>
+        <article class="term" tabindex="0" data-simple="白话：你付的钱不一定先算货款，卖方可能先拿去抵扣违约金、仓储费、滞期费等。"><h3><span class="dot"></span>费用优先冲抵<span class="hint">?</span></h3><p>买方付款先抵扣违约金、仓储费、滞期费、跌价损失，再抵货款。</p><small>看点：对买方不利，会影响是否能提货。</small></article>
+      </div>
+    </section>
+
+    <section id="clauses">
+      <div class="section-head">
+        <h2>四、条款矩阵：每个环节读合同看什么</h2>
+        <p>这张表适合实际看合同时放在旁边对照。遇到空白或模糊表达，就容易形成履约争议。</p>
+      </div>
+
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th>环节</th>
+            <th>必须看懂的条款</th>
+            <th>常见术语/黑话</th>
+            <th>注意事项</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>招采</td>
+            <td>采购范围、投标人资格、报价规则、评标办法、合同草案、保证金。</td>
+            <td>公开招标、询比采购、响应文件、澄清、补遗、投标保证金、履约保证金。</td>
+            <td>带星号条款、报价漏项、保证金形式和期限会直接影响投标有效性。</td>
+          </tr>
+          <tr>
+            <td>授权</td>
+            <td>授权范围、有效期、代理事项、主从合同关系、条款冲突优先级。</td>
+            <td>Power of Attorney、Supplemental Agreement、GTC、STCs、Letter Agreement。</td>
+            <td>授权书不能泛泛写，要能覆盖实际报关、仓储、运输、签署文件等动作。</td>
+          </tr>
+          <tr>
+            <td>内贸</td>
+            <td>标的、质量、价格、付款、交货、验收、发票、风险和违约。</td>
+            <td>一口价、点价期、暂定价、基差、款到发货、货到付款、风险转移。</td>
+            <td>价格公式必须可计算；货权转移和风险转移最好分开写清楚。</td>
+          </tr>
+          <tr>
+            <td>外贸/国际贸易</td>
+            <td>贸易术语、装运港、目的港、装运期、单证、信用证、检验、适用法律。</td>
+            <td>FOB、CIF、CFR、EXW、DAP、DES、B/L、L/C、Laytime、Demurrage、SIAC。</td>
+            <td>不要只看 Incoterms 名称，合同常会改写费用和风险边界。</td>
+          </tr>
+          <tr>
+            <td>仓储保管</td>
+            <td>入库验收、保管要求、进仓单、库存证明、提货单、放货流程、留置。</td>
+            <td>仓储物、进仓单、接货函、库存表、货转、指定印鉴、私自放货。</td>
+            <td>仓库最重要的问题是“凭什么放货”，不是单纯“货放在哪里”。</td>
+          </tr>
+          <tr>
+            <td>物流运输</td>
+            <td>托运单、运杂费、订舱、报关报检、交接清单、货损货差、保险。</td>
+            <td>托运书、订舱配载、集港、多式联运、港口作业包干费、滞期费、滞箱费。</td>
+            <td>年度协议只是框架，单笔业务要靠托运单、交接单和费用确认落地。</td>
+          </tr>
+          <tr>
+            <td>结算与风控</td>
+            <td>结算价公式、质量调整、保证金、违约金、处置权、费用冲抵、争议解决。</td>
+            <td>跌价损失、跌价追保、单方处置、费用优先冲抵、仲裁分析、不可抗力。</td>
+            <td>大宗商品价格波动大，跌价损失和追保条款往往决定真正风险归属。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="risks">
+      <div class="section-head">
+        <h2>五、注意事项：业务新人最容易漏看的点</h2>
+        <p>下面这些不是孤立条款，而是读合同时要反复串起来看的风险链。</p>
+      </div>
+
+      <div class="grid-3">
+        <article class="check">
+          <h3>货权链</h3>
+          <p>看接货函、进仓单、库存证明、提货单、放货通知是否能串起来。谁有权通知放货，谁承担错放责任，必须清楚。</p>
+          <ul class="plain-list">
+            <li>先找“货权凭证”：接货函、进仓单、库存证明、仓单、提单。</li>
+            <li>再找“放货凭证”：提货单、放货通知、直放通知单、D/O。</li>
+            <li>最后核对“谁签发、盖什么章、发到哪个邮箱、是否需要电话复核”。</li>
+          </ul>
+          <div class="chips"><span class="chip risk">私自放货</span><span class="chip">指定印鉴</span><span class="chip">货权凭证</span></div>
+        </article>
+        <article class="check">
+          <h3>价格链</h3>
+          <p>看价格是不是一口价，还是点价/指数/基差/质量调整价。只要公式不完整，后面结算就容易扯皮。</p>
+          <ul class="plain-list">
+            <li>先判断“固定价”还是“浮动价”：一口价、点价、指数价、暂定价。</li>
+            <li>把公式写成算式：最终价 = 基准价/点价 + 基差 + 质量调整 + 费用。</li>
+            <li>检查指数来源、取值日期、含税口径、四舍五入和多退少补期限。</li>
+          </ul>
+          <div class="chips"><span class="chip warn">点价期</span><span class="chip">结算价</span><span class="chip">质量调整</span></div>
+        </article>
+        <article class="check">
+          <h3>费用链</h3>
+          <p>看运费、港杂费、仓储费、滞期费、滞箱费、报关报检费是否包含在包干费或报价里。</p>
+          <ul class="plain-list">
+            <li>先看报价是否写“包干”：包干费包含哪些作业，不包含哪些作业。</li>
+            <li>再列额外费用：仓储费、港杂费、滞期费、滞箱费、换单费、改单费。</li>
+            <li>最后看触发原因：船期延误、买方迟提、单证不齐、查验、超期堆存。</li>
+          </ul>
+          <div class="chips"><span class="chip">包干费</span><span class="chip risk">滞期费</span><span class="chip">运杂费</span></div>
+        </article>
+        <article class="check">
+          <h3>单证链</h3>
+          <p>外贸看提单、商业发票、装箱单、原产地证、质量证书；内贸看出库单、磅单、质检报告、发票。</p>
+          <ul class="plain-list">
+            <li>外贸先看提单：正本、电放、海运单、指示提单，决定怎么放货。</li>
+            <li>再看付款单据：商业发票、装箱单、原产地证、质量/重量证书。</li>
+            <li>信用证交易要逐项核对单证名称、金额、日期、装运港、目的港是否一致。</li>
+          </ul>
+          <div class="chips"><span class="chip">Bill of Lading</span><span class="chip">Packing List</span><span class="chip">磅单</span></div>
+        </article>
+        <article class="check">
+          <h3>时间链</h3>
+          <p>看交货期、提货期、点价期、开证期、装运期、Laytime、付款期。时间节点常常触发违约责任。</p>
+          <ul class="plain-list">
+            <li>把所有日期画成时间轴：付款、点价、备货、进港、装船、到港、提货。</li>
+            <li>标出“逾期后果”：违约金、仓储费、滞期费、解除合同、处置货物。</li>
+            <li>船务要单独看 NOR、Laytime、SHINC/PWWD，决定滞期费怎么算。</li>
+          </ul>
+          <div class="chips"><span class="chip">交货期</span><span class="chip">Laytime</span><span class="chip risk">逾期提货</span></div>
+        </article>
+        <article class="check">
+          <h3>救济链</h3>
+          <p>看违约金、保证金、跌价追保、留置、单方处置、费用优先冲抵、争议解决。它们决定出事后怎么收口。</p>
+          <ul class="plain-list">
+            <li>先看能不能暂停交货、拒绝放货、留置货物或要求追加保证金。</li>
+            <li>再看能不能单方处置/转售，以及处置款先抵扣哪些费用。</li>
+            <li>最后看争议解决地、适用法律、仲裁机构和送达地址是否明确。</li>
+          </ul>
+          <div class="chips"><span class="chip risk">跌价追保</span><span class="chip risk">留置</span><span class="chip">仲裁</span></div>
+        </article>
+      </div>
+
+      <div style="height:16px"></div>
+      <div class="alert">
+        记忆口诀：先看“谁和谁”，再看“买卖什么”，接着看“价怎么算、货怎么交、钱怎么付、单证怎么控”，最后看“出问题谁担责、能不能扣钱或处置货”。
+      </div>
+    </section>
+
+    <section id="intl-freight">
+      <div class="section-head">
+        <h2>六、国际货运入门：各方关系、风险空窗期与信用处理</h2>
+        <p>如果没做过国际贸易，最容易混淆的是“谁卖货、谁运货、谁放货、谁控制单证、谁承担风险”。这一段专门用白话把国际货运里的角色和责任链讲清楚。</p>
+      </div>
+
+      <div class="freight-map">
+        <article class="party-card">
+          <h3><span class="dot"></span>卖方 / Shipper</h3>
+          <p>卖方是把货卖出去的人。在运输单证里，卖方常常也是发货人 Shipper。卖方通常负责备货、装箱、出口报关或交到指定地点，具体责任看贸易术语。</p>
+          <div class="chips"><span class="chip">发货人</span><span class="chip">出口报关</span><span class="chip">装船前责任</span></div>
+        </article>
+        <article class="party-card">
+          <h3><span class="dot"></span>买方 / Consignee</h3>
+          <p>买方是最终要拿货的人。在提单上可能显示为收货人 Consignee，也可能是银行或“凭指示”。买方关心能不能拿到单、能不能顺利提货。</p>
+          <div class="chips"><span class="chip">收货人</span><span class="chip">付款赎单</span><span class="chip">进口清关</span></div>
+        </article>
+        <article class="party-card">
+          <h3><span class="dot"></span>货代 / Freight Forwarder</h3>
+          <p>货代是帮卖方或买方安排运输的人，做订舱、拖车、报关、装箱、换单等协调工作。货代不一定是实际承运人。</p>
+          <div class="chips"><span class="chip">订舱</span><span class="chip">报关报检</span><span class="chip">操作协调</span></div>
+        </article>
+        <article class="party-card">
+          <h3><span class="dot"></span>船公司 / Carrier</h3>
+          <p>船公司是真正承运货物的人，签发提单或海运单。它按单证和指令决定目的港是否放货。</p>
+          <div class="chips"><span class="chip">承运人</span><span class="chip">签发提单</span><span class="chip">目的港放货</span></div>
+        </article>
+        <article class="party-card">
+          <h3><span class="dot"></span>港口/码头</h3>
+          <p>港口和码头负责进港、堆存、装卸船、过磅、场站操作。它们管的是现场作业，不一定管买卖双方的货权争议。</p>
+          <div class="chips"><span class="chip">堆场</span><span class="chip">装卸</span><span class="chip">港杂费</span></div>
+        </article>
+        <article class="party-card">
+          <h3><span class="dot"></span>港口代理 / 船代</h3>
+          <p>船代是船公司在港口的代理，处理换单、放货、收取目的港费用等事项。目的港提货通常绕不开船代。</p>
+          <div class="chips"><span class="chip">换单</span><span class="chip">D/O</span><span class="chip">放货指令</span></div>
+        </article>
+        <article class="party-card">
+          <h3><span class="dot"></span>银行</h3>
+          <p>在信用证或托收场景下，银行不管货好不好，主要看单证是否符合。谁控制单据，谁就更能控制货权和付款节奏。</p>
+          <div class="chips"><span class="chip">L/C</span><span class="chip">交单</span><span class="chip">赎单</span></div>
+        </article>
+        <article class="party-card">
+          <h3><span class="dot"></span>保险公司</h3>
+          <p>保险公司负责赔付约定保险期间和责任范围内的损失。关键是保险从哪里开始、到哪里结束，是否覆盖装船前空窗期。</p>
+          <div class="chips"><span class="chip">仓至仓</span><span class="chip">仓至船</span><span class="chip">海运险</span></div>
+        </article>
+      </div>
+
+      <div class="mini">
+        <h3>1. 一票货从仓库到买方手里，大致这样走</h3>
+        <div class="route-strip">
+          <div class="route-step"><b>卖方备货</b><span>货在工厂或仓库，卖方准备装箱、质检、发票和出口资料。</span><div class="chips"><span class="chip">Commercial Invoice</span></div></div>
+          <div class="route-step"><b>拖车/集港</b><span>货从卖方仓库运到港口、堆场或指定仓库，等待船期。</span><div class="chips"><span class="chip warn">风险空窗期</span></div></div>
+          <div class="route-step"><b>报关进港</b><span>货代或报关行办理出口申报，码头接收货物。</span><div class="chips"><span class="chip">报关</span><span class="chip">进港</span></div></div>
+          <div class="route-step"><b>装船</b><span>货从堆场或码头吊装上船，贸易术语通常在这里切换风险。</span><div class="chips"><span class="chip risk">装船界限</span></div></div>
+          <div class="route-step"><b>海运与单证</b><span>船公司签发提单。卖方按付款方式把单交给买方、卖方银行、买方银行或托收银行。</span><div class="chips"><span class="chip">B/L</span><span class="chip">L/C</span><span class="chip">交单</span></div></div>
+          <div class="route-step"><b>目的港提货</b><span>买方拿正本提单、电放信息或海运单去船代换 D/O 提货单/放货指令，再清关缴费提货。</span><div class="chips"><span class="chip">D/O</span><span class="chip">电放</span><span class="chip">换单</span></div></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:14px">
+        <article class="mini">
+          <h3>2. 审查意见说的“责任真空期”是什么</h3>
+          <p>很多合同只写“装船后风险转移给买方”，但没有写清“卖方仓库到真正装船前”这段风险归谁。问题就在这里：货已经离开卖方仓库，却还没有装上船，如果发生火灾、受潮、被盗、叉车撞坏、吊装掉落，谁负责？有没有保险赔？</p>
+          <ul class="plain-list">
+            <li><b>仓库等待：</b>货到发货港仓库或码头堆场，船期延误，等了几天才装船。</li>
+            <li><b>吊装过程：</b>货正在从码头吊往船上，但还没完成装船或越过合同约定界限。</li>
+            <li><b>保险缺口：</b>FOB/CFR 下卖方通常不买海运险，买方保险也可能从装船后才生效。</li>
+          </ul>
+          <div class="chips"><span class="chip risk">装船前风险</span><span class="chip risk">仓至船保险</span><span class="chip">保管责任</span></div>
+        </article>
+
+        <article class="mini">
+          <h3>3. 信用处理方式：钱和货怎么互相卡住</h3>
+          <p>国际贸易不是“一手交钱一手交货”，更多是通过银行、提单、电放和信用证来控制节奏。核心逻辑是：卖方怕收不到钱，买方怕付了钱拿不到货。</p>
+          <ul class="plain-list">
+            <li><b>T/T 电汇：</b>买方直接汇款。卖方通常在确认收款后，把正本提单寄给买方，或向船公司申请电放。</li>
+            <li><b>L/C 信用证：</b>银行看单付款。卖方把发票、提单等单据交给自己的银行，银行再转给买方银行审核付款。</li>
+            <li><b>D/P 付款交单：</b>卖方把单据交给托收银行，买方付款后，买方银行才把单据交给买方。</li>
+            <li><b>D/A 承兑交单：</b>卖方通过银行交单，买方承兑“到期付款”后即可拿单，卖方信用风险更高。</li>
+          </ul>
+          <div class="chips"><span class="chip">T/T</span><span class="chip">L/C</span><span class="chip">D/P</span><span class="chip warn">D/A</span></div>
+        </article>
+      </div>
+
+      <div class="doc-release-layout">
+        <article class="mini wide-panel">
+          <h3>4. 提单、电放、海运单怎么影响放货</h3>
+          <p>放货的关键不是“谁说货是他的”，而是船公司或船代凭什么把货放给他。你可以把目的港提货理解成：买方先拿手里的单证或电放信息，到船公司目的港代理处换出 <b>D/O（Delivery Order，提货单/放货指令）</b>，再凭 D/O 去码头、堆场或仓库提箱提货。</p>
+          <table class="matrix release-table" style="margin-top:12px">
+            <thead>
+              <tr><th>方式</th><th>怎么操作</th><th>小白例子</th><th>风险特点</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>正本提单</td><td>卖方拿到船公司签发的纸质正本提单后，通常在收款后寄给买方或交给银行。买方到目的港船代处交正本，换 D/O 提货。</td><td>像“纸质钥匙”。买方没拿到正本，一般不能从船代换出提货单。</td><td>控制力强，但寄单慢；正本丢失、迟到会影响提货并产生滞箱滞港费。</td></tr>
+              <tr><td>电放</td><td>卖方通常先把正本提单交回起运港船公司或确认无需正本流转，再要求船公司发电放指令给目的港代理。买方凭身份、到货通知等去换 D/O。</td><td>像“远程开锁”。不用等快递正本，船代收到电放信息就能放货。</td><td>速度快，但卖方电放前必须确认已收款、已获信用证保障或买方信用可靠；否则可能货放了钱没收回。</td></tr>
+              <tr><td>海运单</td><td>船公司签发 Sea Waybill，目的港通常核对收货人身份即可放货，不要求提交正本提单。</td><td>像“实名取件”。系统里写明收货人是谁，身份对上就能提。</td><td>放货快，但货权控制弱，不适合对买方信用没把握的交易。</td></tr>
+              <tr><td>指示提单</td><td>提单收货人栏写 To Order 或凭某银行/公司指示，需要通过背书转让。买方或银行取得完整背书链后才能换单提货。</td><td>像“可转让的钥匙”。谁拿到连续背书的正本，谁更可能控制货。</td><td>常用于信用证和银行控单；背书不完整、银行未放单，目的港可能无法提货。</td></tr>
+            </tbody>
+          </table>
+          <ul class="plain-list">
+            <li><b>交单交给谁：</b>T/T 场景下，卖方可能直接把单据寄给买方；L/C 场景下，卖方把单据交给卖方银行，再由银行链条转给买方银行；D/P、D/A 场景下，卖方通过托收银行交单，买方付款或承兑后才能拿单。</li>
+            <li><b>换单换什么：</b>买方不是把“提单换成另一张提单”，而是拿正本提单、电放信息或海运单，到船代处换取 D/O 提货单/放货指令。</li>
+          </ul>
+        </article>
+
+        <article class="mini narrow-panel clause-suggestion">
+          <h3>5. 合同里建议补的条款</h3>
+          <p>为了回应“发货港仓库至装船前”的审查意见，可以在合同中把责任和保险写明。下面是两种常见方向。</p>
+          <div class="clause-options">
+            <div class="alert">
+              <b>保护卖方写法：</b>卖方将货物交付至发货港指定仓库/堆场并取得接收凭证后，货物灭失或损坏风险转移给买方。买方负责或委托卖方协助投保货物自该仓库/堆场至装船期间的保险，费用由买方承担。
+            </div>
+            <div class="alert" style="border-left-color:var(--accent);background:#f0fdfa;color:#134e4a">
+              <b>明确现状写法：</b>货物在完成装船前，包括在发货港仓库、堆场、码头等待及吊装过程中的保管责任和风险由卖方承担；卖方应自行安排该阶段的国内运输、仓储及装船前保险。
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div style="height:16px"></div>
+      <div class="alert">
+        一句话记住：国际贸易里不要只问“货上船后谁负责”，还要问“货从仓库到上船前谁负责、谁买保险、船公司凭什么放货、银行凭什么付款”。
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="page">
+      本页根据当前合同样本中的招采、授权、内贸、外贸、国际贸易、仓储保管、物流运输等条款整理，用于业务学习和合同阅读辅助。实际业务判断请以具体合同文本和公司制度为准。
+    </div>
+  </footer>
+
+  <script>
+    const input = document.getElementById('termSearch');
+    const clear = document.getElementById('clearSearch');
+    const cards = Array.from(document.querySelectorAll('#termGrid .term'));
+
+    function filterTerms() {
+      const query = input.value.trim().toLowerCase();
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.classList.toggle('hidden-by-search', query && !text.includes(query));
+      });
+    }
+
+    input.addEventListener('input', filterTerms);
+    clear.addEventListener('click', () => {
+      input.value = '';
+      filterTerms();
+      input.focus();
+    });
+  </script>
+</body>
+</html>
